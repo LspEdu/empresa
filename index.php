@@ -7,16 +7,47 @@
     <title>Departamentos</title>
 </head>
 <body>
+    <div>
+        <?php 
+        $codigo = (isset($_GET['codigo'])) ? trim($_GET['codigo']) : null;
+
+        ?>
+        <form action="" method="get">
+            <label>
+                Código:
+                <input type="text" name="codigo" id="" size=8 value="<?= $codigo ?>">
+            </label>
+            <button type="submit">Buscar</button>
+        </form>
+    </div>
+
     <?php
-
         $pdo = new PDO('pgsql:host=localhost;dbname=empresa', 'empresa', 'empresa');
-
-        $sent = $pdo->query('SELECT * FROM departamentos ORDER BY codigo');
-
-
-        $fila = $sent->fetchAll();
-        
+        $sent = $pdo->prepare('SELECT * FROM departamentos WHERE codigo = :codigo');
+        $sent->execute([':codigo' => $codigo]);
     ?>
+    <div>
+        
+            <table style="margin: auto;" border="3">
+                <thead>
+                    <th>Código</th>
+                    <th>Denominación</th>
+                </thead>
+                <tbody>
+                    <?php foreach ($sent as $fila): ?>
+                        <tr>
+                            <td><?= $fila['codigo'] ?></td>
+                            <td><?= $fila['denominacion'] ?></td>
+
+                        </tr>
+                    <?php endforeach ?>
+                </tbody>
+                
+            </table>
+
+    </div>
+
+
 
     
 </body>
